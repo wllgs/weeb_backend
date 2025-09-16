@@ -15,8 +15,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+from weeb_app.views import ArticleViewSet, ContactMessageCreateView, satisfaction_analytics
+
+router = DefaultRouter()
+router.register(r'articles', ArticleViewSet, basename='article')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include(router.urls)),  # Inclure les URLs de l'application weeb_app
+    path('api/contact/', ContactMessageCreateView.as_view(), name='contact'),
+    path('api/analytics/satisfaction/', satisfaction_analytics, name='satisfaction-analytics'),
+    path('', include("weeb_app.front_urls")), # Pour le mini frontend   
 ]
+
